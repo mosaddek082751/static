@@ -1,4 +1,3 @@
-  
 pipeline {
      agent any
      stages {
@@ -16,6 +15,11 @@ pipeline {
                   sh 'tidy -q -e *.html'
               }
          }
+         stage('Security Scan') {
+              steps { 
+                 aquaMicroscanner imageName: 'alpine:latest', notCompleted: 'exit 1', onDisallowed: 'fail'
+              }
+         }  
          stage('Upload to AWS') {
               steps {
                   withAWS(region:'us-east-1',credentials:'aws-static') {
